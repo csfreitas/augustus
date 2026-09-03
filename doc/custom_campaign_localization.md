@@ -84,6 +84,6 @@ Example:
 </media_localization>
 ```
 
-Only `speech` and `background_music` are supported in the first version. Filenames must be simple file names without directories, drive prefixes, or path traversal. Missing entries and missing localized files fall back independently to the canonical media. A malformed media companion is ignored without discarding a valid text overlay.
+Only `speech` and `background_music` are supported in the first version. For consistent behavior on Windows, Linux, and macOS, filenames must use printable ASCII characters and be simple file names without directories, drive prefixes, path traversal, leading or trailing spaces, or platform-reserved characters (`<`, `>`, `:`, `"`, `/`, `\\`, `|`, `?`, `*`). Missing entries and missing localized files fall back independently to the canonical media. A malformed media companion is ignored without discarding a valid text overlay.
 
 Media companions depend on a matching text overlay. They are held separately in memory, are not serialized into save games, and are not exported into the canonical custom message XML.

@@ -15,6 +15,7 @@
 #include <string.h>
 
 #define CUSTOM_MESSAGE_LOCALIZATION_VERSION 1
+#define CUSTOM_MESSAGE_MEDIA_LOCALIZATION_VERSION 1
 #define XML_TOTAL_ELEMENTS 5
 #define XML_MEDIA_TOTAL_ELEMENTS 4
 #define XML_LOCALES_TOTAL_ELEMENTS 2
@@ -216,7 +217,7 @@ static void xml_on_text(const char *text)
 static int xml_start_media_localization(void)
 {
     int version = xml_parser_get_attribute_int("version");
-    if (version != CUSTOM_MESSAGE_LOCALIZATION_VERSION) {
+    if (version != CUSTOM_MESSAGE_MEDIA_LOCALIZATION_VERSION) {
         log_error("Unsupported custom message media localization version", 0, version);
         data.success = 0;
         return 0;
@@ -262,11 +263,20 @@ static void xml_end_media_message(void)
 
 static int is_safe_media_filename(const char *filename)
 {
-    if (!filename || !*filename || strlen(filename) >= FILE_NAME_MAX ||
-        strcmp(filename, ".") == 0 || strcmp(filename, "..") == 0) {
+    if (!filename || !*filename) {
         return 0;
     }
-    return !strchr(filename, '/') && !strchr(filename, '\\') && !strchr(filename, ':');
+    size_t length = strlen(filename);
+    if (length >= FILE_NAME_MAX || filename[0] == ' ' || filename[0] == '.' ||
+        filename[length - 1] == ' ' || filename[length - 1] == '.') {
+        return 0;
+    }
+    for (const unsigned char *character = (const unsigned char *) filename; *character; character++) {
+        if (*character < 0x20 || *character > 0x7e || strchr("<>:\"/\\|?*", *character)) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 static int replace_media_filename(uint8_t **destination, const char *description)

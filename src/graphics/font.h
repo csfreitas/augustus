@@ -44,6 +44,12 @@ typedef struct {
 void font_set_encoding(encoding_type encoding);
 
 /**
+ * Selects the character mapping used by original Brazilian Portuguese graphics.
+ * @param enabled Whether the loaded graphics use the Brazilian Portuguese font layout
+ */
+void font_set_brazilian_portuguese_asset_layout(int enabled);
+
+/**
  * Gets the font definition for the specified font
  * @param font Font
  * @return Font definition

@@ -251,6 +251,7 @@ static struct {
     const int *font_mapping;
     const font_definition *font_definitions;
     int multibyte;
+    int brazilian_portuguese_asset_layout;
 } data;
 
 static int image_y_offset_none(uint8_t c, int image_height, int line_height)
@@ -504,6 +505,7 @@ static int image_y_offset_japanese(uint8_t c, int image_height, int line_height)
 
 void font_set_encoding(encoding_type encoding)
 {
+    data.brazilian_portuguese_asset_layout = 0;
     data.multibyte = MULTIBYTE_NONE;
     if (encoding == ENCODING_EASTERN_EUROPE) {
         data.font_mapping = CHAR_TO_FONT_IMAGE_EASTERN;
@@ -537,6 +539,11 @@ void font_set_encoding(encoding_type encoding)
         data.font_mapping = CHAR_TO_FONT_IMAGE_DEFAULT;
         data.font_definitions = DEFINITIONS_DEFAULT;
     }
+}
+
+void font_set_brazilian_portuguese_asset_layout(int enabled)
+{
+    data.brazilian_portuguese_asset_layout = enabled;
 }
 
 const font_definition *font_definition_for(font_t font)
@@ -619,9 +626,18 @@ int font_letter_id(const font_definition *def, const uint8_t *str, int *num_byte
         }
     } else {
         *num_bytes = 1;
-        if (!data.font_mapping[*str]) {
+        int image_id = data.font_mapping[*str];
+        if (data.brazilian_portuguese_asset_layout) {
+            switch (*str) {
+                case 0xc3: image_id = 105; break; // capital A with tilde
+                case 0xc7: image_id = 108; break; // capital C with cedilla
+                case 0xd5: image_id = 123; break; // capital O with tilde
+                case 0xf5: image_id = 93; break;  // o with tilde
+            }
+        }
+        if (!image_id) {
             return -1;
         }
-        return data.font_mapping[*str] + def->image_offset - 1;
+        return image_id + def->image_offset - 1;
     }
 }

@@ -346,8 +346,9 @@ static int detect_brazilian_portuguese_font_layout(const image_draw_data *draw_d
         int width;
         int height;
     } signature[] = {
-        {80, 134, 8, 12},  // a with tilde
-        {92, 128, 8, 12},  // o with tilde
+        // Offsets are zero-based positions; font mapping IDs are one-based.
+        {80, 134, 8, 12},   // a with tilde
+        {92, 128, 8, 12},   // o with tilde
         {104, 196, 11, 16}, // capital A with tilde
         {107, 141, 12, 16}, // capital C with cedilla
         {122, 166, 10, 15}, // capital O with tilde

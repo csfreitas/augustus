@@ -283,8 +283,7 @@ static int image_y_offset_default(uint8_t c, int image_height, int line_height)
     if (offset < 0) {
         offset = 0;
     }
-    if (c < 0x80 || c == 0xE7 ||
-        (data.asset_layout == FONT_ASSET_LAYOUT_BRAZILIAN_PORTUGUESE && c == 0xC7)) {
+    if (c < 0x80 || c == 0xE7) {
         offset = 0;
     }
     return offset;

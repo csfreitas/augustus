@@ -39,10 +39,10 @@ static const int CHAR_TO_FONT_IMAGE_DEFAULT[] = {
 };
 
 static const uint8_t FONT_ASSET_LAYOUT_BRAZILIAN_PORTUGUESE_OVERRIDES[256] = {
-    // Diagnostic atlas: map CP1252 bytes 0xc0-0xef to font positions 80-127.
-    // This temporary branch is used only to identify the Brazilian asset layout visually.
-    [0xc0] = 80,  [0xc1] = 81,  [0xc2] = 82,  [0xc3] = 83,
-    [0xc4] = 84,  [0xc5] = 85,  [0xc6] = 86,  [0xc7] = 87,
+    // Diagnostic atlas: map CP1252 bytes to selected Brazilian font positions.
+    // This temporary branch is used only to identify the asset layout visually.
+    [0xc0] = 128, [0xc1] = 129, [0xc2] = 130, [0xc3] = 131,
+    [0xc4] = 132, [0xc5] = 133, [0xc6] = 86,  [0xc7] = 87,
     [0xc8] = 88,  [0xc9] = 89,  [0xca] = 90,  [0xcb] = 91,
     [0xcc] = 92,  [0xcd] = 93,  [0xce] = 94,  [0xcf] = 95,
     [0xd0] = 96,  [0xd1] = 97,  [0xd2] = 98,  [0xd3] = 99,

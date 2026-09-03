@@ -39,10 +39,10 @@ static const int CHAR_TO_FONT_IMAGE_DEFAULT[] = {
 };
 
 static const uint8_t FONT_ASSET_LAYOUT_BRAZILIAN_PORTUGUESE_OVERRIDES[256] = {
-    [0xc3] = 105, // capital A with tilde
-    [0xc7] = 108, // capital C with cedilla
-    [0xd5] = 123, // capital O with tilde
-    [0xf5] = 93,  // o with tilde
+    [0xc3] = 104, // capital A with tilde
+    [0xc7] = 107, // capital C with cedilla
+    [0xd5] = 122, // capital O with tilde
+    [0xf5] = 92,  // o with tilde
 };
 
 static const uint8_t *const FONT_ASSET_LAYOUT_OVERRIDES[FONT_ASSET_LAYOUT_MAX] = {

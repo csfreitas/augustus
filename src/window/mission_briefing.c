@@ -438,6 +438,7 @@ static void button_back(int param1, int param2)
     if (data.back_action == BUTTON_GO_BACK_NONE) {
         return;
     }
+    sound_device_on_audio_finished(0);
     sound_music_stop();
     sound_speech_stop();
     if (data.back_action == BUTTON_GO_BACK_MISSION_SELECTION) {
@@ -451,6 +452,7 @@ static void button_back(int param1, int param2)
 static void button_start_mission(int param1, int param2)
 {
     if (data.back_action != BUTTON_GO_BACK_NONE || data.audio_played) {
+        sound_device_on_audio_finished(0);
         sound_music_stop();
         sound_speech_stop();
     }

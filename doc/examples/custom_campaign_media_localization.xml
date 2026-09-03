@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<media_localization version="1" language="pt-BR">
+    <message uid="Drought">
+        <speech filename="RC01_Drought_PTBR.wav"/>
+    </message>
+    <message uid="intro">
+        <speech filename="RC01_Briefing_PTBR.wav"/>
+        <background_music filename="RC_Briefing_Music.wav"/>
+    </message>
+</media_localization>

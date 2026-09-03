@@ -304,6 +304,10 @@ const char *custom_messages_get_audio(custom_message_t *message)
 
 const char *custom_messages_get_speech(custom_message_t *message)
 {
+    const char *localized = custom_messages_localization_get_speech(message->id);
+    if (localized) {
+        return localized;
+    }
     custom_media_t *media = message->linked_media[CUSTOM_MEDIA_SPEECH];
     if (media && media->type == CUSTOM_MEDIA_SPEECH &&
         media->link_type == CUSTOM_MEDIA_LINK_TYPE_CUSTOM_MESSAGE_AS_MAIN) {
@@ -315,6 +319,10 @@ const char *custom_messages_get_speech(custom_message_t *message)
 
 const char *custom_messages_get_background_music(custom_message_t *message)
 {
+    const char *localized = custom_messages_localization_get_background_music(message->id);
+    if (localized) {
+        return localized;
+    }
     if (message->linked_background_music &&
         message->linked_background_music->type == CUSTOM_MEDIA_SOUND &&
         message->linked_background_music->link_type == CUSTOM_MEDIA_LINK_TYPE_CUSTOM_MESSAGE_AS_BACKGROUND_MUSIC) {

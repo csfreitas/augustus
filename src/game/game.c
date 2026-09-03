@@ -50,8 +50,11 @@ static language_type saved_game_language = LANGUAGE_UNKNOWN;
 
 static void update_font_asset_layout(void)
 {
-    font_set_brazilian_portuguese_asset_layout(saved_game_language == LANGUAGE_PORTUGUESE &&
-        image_uses_brazilian_portuguese_font_layout());
+    font_asset_layout layout = FONT_ASSET_LAYOUT_DEFAULT;
+    if (saved_game_language == LANGUAGE_PORTUGUESE && image_uses_brazilian_portuguese_font_layout()) {
+        layout = FONT_ASSET_LAYOUT_BRAZILIAN_PORTUGUESE;
+    }
+    font_set_asset_layout(layout);
 }
 
 static encoding_type update_encoding(int is_editor)

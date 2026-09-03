@@ -39,34 +39,12 @@ static const int CHAR_TO_FONT_IMAGE_DEFAULT[] = {
 };
 
 static const uint8_t FONT_ASSET_LAYOUT_BRAZILIAN_PORTUGUESE_OVERRIDES[256] = {
-    // The Brazilian CD-ROM assets store accented letters in a different order.
+    // The Brazilian CD-ROM assets relocate four Portuguese glyphs.
     // Values are one-based font image IDs, matching CHAR_TO_FONT_IMAGE_DEFAULT.
-    [0xc0] = 114, // capital A with grave
-    [0xc1] = 112, // capital A with acute
-    [0xc2] = 113, // capital A with circumflex
     [0xc3] = 105, // capital A with tilde
     [0xc7] = 108, // capital C with cedilla
-    [0xc9] = 116, // capital E with acute
-    [0xca] = 115, // capital E with circumflex
-    [0xcd] = 117, // capital I with acute
-    [0xd3] = 120, // capital O with acute
-    [0xd4] = 121, // capital O with circumflex
     [0xd5] = 123, // capital O with tilde
-    [0xda] = 124, // capital U with acute
-    [0xdc] = 126, // capital U with diaeresis
-    [0xe0] = 85,  // a with grave
-    [0xe1] = 84,  // a with acute
-    [0xe2] = 82,  // a with circumflex
-    [0xe3] = 81,  // a with tilde
-    [0xe7] = 101, // c with cedilla
-    [0xe9] = 86,  // e with acute
-    [0xea] = 88,  // e with circumflex
-    [0xed] = 89,  // i with acute
-    [0xf3] = 91,  // o with acute
-    [0xf4] = 95,  // o with circumflex
     [0xf5] = 93,  // o with tilde
-    [0xfa] = 98,  // u with acute
-    [0xfc] = 97,  // u with diaeresis
 };
 
 static const uint8_t *const FONT_ASSET_LAYOUT_OVERRIDES[FONT_ASSET_LAYOUT_MAX] = {
@@ -305,7 +283,8 @@ static int image_y_offset_default(uint8_t c, int image_height, int line_height)
     if (offset < 0) {
         offset = 0;
     }
-    if (c < 0x80 || c == 0xE7) {
+    if (c < 0x80 || c == 0xE7 ||
+        (data.asset_layout == FONT_ASSET_LAYOUT_BRAZILIAN_PORTUGUESE && c == 0xC7)) {
         offset = 0;
     }
     return offset;

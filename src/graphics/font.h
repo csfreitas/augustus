@@ -19,6 +19,12 @@ typedef enum {
     FONT_TYPES_MAX
 } font_t;
 
+typedef enum {
+    FONT_ASSET_LAYOUT_DEFAULT,
+    FONT_ASSET_LAYOUT_BRAZILIAN_PORTUGUESE,
+    FONT_ASSET_LAYOUT_MAX
+} font_asset_layout;
+
 typedef struct {
     font_t font;
     int image_offset;
@@ -44,10 +50,10 @@ typedef struct {
 void font_set_encoding(encoding_type encoding);
 
 /**
- * Selects the character mapping used by original Brazilian Portuguese graphics.
- * @param enabled Whether the loaded graphics use the Brazilian Portuguese font layout
+ * Selects character mapping overrides for the loaded graphics layout.
+ * @param layout Graphics layout to use
  */
-void font_set_brazilian_portuguese_asset_layout(int enabled);
+void font_set_asset_layout(font_asset_layout layout);
 
 /**
  * Gets the font definition for the specified font

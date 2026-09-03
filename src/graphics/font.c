@@ -39,9 +39,10 @@ static const int CHAR_TO_FONT_IMAGE_DEFAULT[] = {
 };
 
 static const uint8_t FONT_ASSET_LAYOUT_BRAZILIAN_PORTUGUESE_OVERRIDES[256] = {
-    // The Brazilian CD-ROM assets relocate three Portuguese glyphs.
+    // The Brazilian CD-ROM assets relocate four Portuguese glyphs.
     // Values are one-based font image IDs, matching CHAR_TO_FONT_IMAGE_DEFAULT.
     [0xc3] = 105, // capital A with tilde
+    [0xc7] = 108, // capital C with cedilla
     [0xd5] = 123, // capital O with tilde
     [0xf5] = 93,  // o with tilde
 };

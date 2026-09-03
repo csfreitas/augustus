@@ -315,6 +315,7 @@ static void handle_input(const mouse *m, const hotkeys *h)
 {
     if (city_victory_state() == VICTORY_STATE_WON) {
         if (input_go_back_requested(m, h)) {
+            sound_device_on_audio_finished(0);
             sound_music_stop();
             sound_speech_stop();
             advance_to_next_mission();
@@ -328,6 +329,7 @@ static void handle_input(const mouse *m, const hotkeys *h)
 
 static void button_fired(const generic_button *button)
 {
+    sound_device_on_audio_finished(0);
     sound_music_stop();
     sound_speech_stop();
     city_victory_stop_governing();

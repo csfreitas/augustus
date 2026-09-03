@@ -62,11 +62,11 @@ static const uint8_t FONT_ASSET_LAYOUT_BRAZILIAN_PORTUGUESE_OVERRIDES[256] = {
     [0xe9] = 86,  // e with acute
     [0xea] = 88,  // e with circumflex
     [0xed] = 89,  // i with acute
-    [0xf3] = 96,  // o with acute
-    [0xf4] = 94,  // o with circumflex
+    [0xf3] = 91,  // o with acute
+    [0xf4] = 95,  // o with circumflex
     [0xf5] = 93,  // o with tilde
-    [0xfa] = 100, // u with acute
-    [0xfc] = 99,  // u with diaeresis
+    [0xfa] = 98,  // u with acute
+    [0xfc] = 97,  // u with diaeresis
 };
 
 static const uint8_t *const FONT_ASSET_LAYOUT_OVERRIDES[FONT_ASSET_LAYOUT_MAX] = {

@@ -349,7 +349,7 @@ static int detect_brazilian_portuguese_font_layout(const image_draw_data *draw_d
         {80, 134, 8, 12},  // a with tilde
         {92, 128, 8, 12},  // o with tilde
         {104, 196, 11, 16}, // capital A with tilde
-        {107, 141, 12, 16}, // capital C with cedilla
+        {107, 141, 12, 16}, // layout-specific glyph
         {122, 166, 10, 15}, // capital O with tilde
     };
     int font_base = data.group_image_ids[GROUP_FONT];

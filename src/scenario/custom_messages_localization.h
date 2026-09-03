@@ -9,5 +9,7 @@ int custom_messages_localization_load(void);
 uint8_t *custom_messages_localization_get_title(int message_id);
 uint8_t *custom_messages_localization_get_subtitle(int message_id);
 uint8_t *custom_messages_localization_get_text(int message_id);
+const char *custom_messages_localization_get_speech(int message_id);
+const char *custom_messages_localization_get_background_music(int message_id);
 
 #endif // CUSTOM_MESSAGES_LOCALIZATION_H

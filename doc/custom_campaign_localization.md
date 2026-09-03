@@ -50,3 +50,40 @@ Only `title`, `subtitle`, and `text` are accepted. Each message is matched throu
 All fields are optional. A missing or empty field falls back to the source message. An unknown UID is ignored and logged. A malformed file, unsupported version, missing UID, or duplicate UID rejects the complete overlay and falls back to the source messages.
 
 The overlay is held separately in memory. It is not serialized into save games and is not used when exporting the canonical custom messages from the editor.
+
+## Localized speech and background music
+
+A campaign may optionally provide a separate media companion for a text overlay. Keeping media in a separate file allows builds that only support text localization to continue loading the message overlay.
+
+For `RC01 Ostia.mapx` and locale `pt-BR`, the companion path is:
+
+```text
+localization/pt-BR/media/RC01 Ostia.xml
+```
+
+Localized files referenced by that companion are stored in:
+
+```text
+localization/pt-BR/audio/
+```
+
+The same layout works for campaigns installed as directories and for packaged `.campaign` files.
+
+Example:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<media_localization version="1" language="pt-BR">
+    <message uid="Drought">
+        <speech filename="RC01_Drought_PTBR.wav"/>
+    </message>
+    <message uid="intro">
+        <speech filename="RC01_Briefing_PTBR.wav"/>
+        <background_music filename="RC_Briefing_Music.wav"/>
+    </message>
+</media_localization>
+```
+
+Only `speech` and `background_music` are supported in the first version. Filenames must be simple file names without directories, drive prefixes, or path traversal. Missing entries and missing localized files fall back independently to the canonical media. A malformed media companion is ignored without discarding a valid text overlay.
+
+Media companions depend on a matching text overlay. They are held separately in memory, are not serialized into save games, and are not exported into the canonical custom message XML.

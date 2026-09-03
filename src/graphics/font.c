@@ -39,10 +39,20 @@ static const int CHAR_TO_FONT_IMAGE_DEFAULT[] = {
 };
 
 static const uint8_t FONT_ASSET_LAYOUT_BRAZILIAN_PORTUGUESE_OVERRIDES[256] = {
-    [0xc3] = 104, // capital A with tilde
-    [0xc7] = 107, // capital C with cedilla
-    [0xd5] = 122, // capital O with tilde
-    [0xf5] = 92,  // o with tilde
+    // Diagnostic atlas: map CP1252 bytes 0xc0-0xef to font positions 80-127.
+    // This temporary branch is used only to identify the Brazilian asset layout visually.
+    [0xc0] = 80,  [0xc1] = 81,  [0xc2] = 82,  [0xc3] = 83,
+    [0xc4] = 84,  [0xc5] = 85,  [0xc6] = 86,  [0xc7] = 87,
+    [0xc8] = 88,  [0xc9] = 89,  [0xca] = 90,  [0xcb] = 91,
+    [0xcc] = 92,  [0xcd] = 93,  [0xce] = 94,  [0xcf] = 95,
+    [0xd0] = 96,  [0xd1] = 97,  [0xd2] = 98,  [0xd3] = 99,
+    [0xd4] = 100, [0xd5] = 101, [0xd6] = 102, [0xd7] = 103,
+    [0xd8] = 104, [0xd9] = 105, [0xda] = 106, [0xdb] = 107,
+    [0xdc] = 108, [0xdd] = 109, [0xde] = 110, [0xdf] = 111,
+    [0xe0] = 112, [0xe1] = 113, [0xe2] = 114, [0xe3] = 115,
+    [0xe4] = 116, [0xe5] = 117, [0xe6] = 118, [0xe7] = 119,
+    [0xe8] = 120, [0xe9] = 121, [0xea] = 122, [0xeb] = 123,
+    [0xec] = 124, [0xed] = 125, [0xee] = 126, [0xef] = 127,
 };
 
 static const uint8_t *const FONT_ASSET_LAYOUT_OVERRIDES[FONT_ASSET_LAYOUT_MAX] = {

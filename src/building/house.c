@@ -77,11 +77,14 @@ static void create_vacant_lot(int x, int y, int image_id)
 
 void building_house_change_to_vacant_lot(building *house)
 {
+    if (house->house_is_merged) {
+        // New vacant lots may reuse building IDs still referenced by undo.
+        game_undo_disable();
+    }
     house->type = BUILDING_HOUSE_VACANT_LOT;
     house->subtype.house_level = house->type - BUILDING_HOUSE_VACANT_LOT;
     int image_id = image_group(GROUP_BUILDING_HOUSE_VACANT_LOT);
     if (house->house_is_merged) {
-        game_undo_disable();
         map_building_tiles_remove(house->id, house->x, house->y);
         house->house_is_merged = 0;
         house->size = house->house_size = 1;

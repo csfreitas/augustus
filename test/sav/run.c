@@ -72,7 +72,18 @@ static int run_autopilot(const char *input_saved_game, const char *output_saved_
     return 0;
 }
 
-static int test_undo_when_merged_house_becomes_vacant(const char *input_saved_game)
+static building *find_first_merged_house(void)
+{
+    for (int id = 1; id <= building_get_highest_id(); id++) {
+        building *b = building_get(id);
+        if (b->state == BUILDING_STATE_IN_USE && b->house_is_merged) {
+            return b;
+        }
+    }
+    return 0;
+}
+
+static int test_merged_house_split_disables_undo(const char *input_saved_game)
 {
     if (!game_pre_init()) {
         return 1;
@@ -85,14 +96,7 @@ static int test_undo_when_merged_house_becomes_vacant(const char *input_saved_ga
         return 3;
     }
 
-    building *merged_house = 0;
-    for (int id = 1; id <= building_get_highest_id(); id++) {
-        building *b = building_get(id);
-        if (b->state == BUILDING_STATE_IN_USE && b->house_is_merged) {
-            merged_house = b;
-            break;
-        }
-    }
+    building *merged_house = find_first_merged_house();
     if (!merged_house) {
         printf("No merged house found in %s\n", input_saved_game);
         game_exit();
@@ -114,8 +118,8 @@ static int test_undo_when_merged_house_becomes_vacant(const char *input_saved_ga
 
 int main(int argc, char **argv)
 {
-    if (argc == 3 && strcmp(argv[1], "--test-undo-vacant-house-split") == 0) {
-        return test_undo_when_merged_house_becomes_vacant(argv[2]);
+    if (argc == 3 && strcmp(argv[1], "--test-merged-house-split-disables-undo") == 0) {
+        return test_merged_house_split_disables_undo(argv[2]);
     }
     if (argc != 5) {
         printf("Incorrect number of arguments (%d)\n", argc);

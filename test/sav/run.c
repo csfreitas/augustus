@@ -1,8 +1,11 @@
+#include "building/building.h"
+#include "building/house.h"
 #include "core/backtrace.h"
 #include "core/time.h"
 #include "game/file.h"
 #include "game/game.h"
 #include "game/settings.h"
+#include "game/undo.h"
 
 #ifdef _MSC_VER
 #include <direct.h>
@@ -15,6 +18,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "sav_compare.h"
 
 static void handler(int sig)
@@ -68,8 +72,51 @@ static int run_autopilot(const char *input_saved_game, const char *output_saved_
     return 0;
 }
 
+static int test_undo_when_merged_house_becomes_vacant(const char *input_saved_game)
+{
+    if (!game_pre_init()) {
+        return 1;
+    }
+    if (!game_init()) {
+        return 2;
+    }
+    if (!game_file_load_saved_game(input_saved_game)) {
+        game_exit();
+        return 3;
+    }
+
+    building *merged_house = 0;
+    for (int id = 1; id <= building_get_highest_id(); id++) {
+        building *b = building_get(id);
+        if (b->state == BUILDING_STATE_IN_USE && b->house_is_merged) {
+            merged_house = b;
+            break;
+        }
+    }
+    if (!merged_house) {
+        printf("No merged house found in %s\n", input_saved_game);
+        game_exit();
+        return 4;
+    }
+
+    game_undo_start_build(BUILDING_CLEAR_LAND);
+    building_house_change_to_vacant_lot(merged_house);
+    game_undo_finish_build(0);
+
+    int undo_available = game_can_undo();
+    game_exit();
+    if (undo_available) {
+        printf("Undo remained available after a merged house split\n");
+        return 5;
+    }
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
+    if (argc == 3 && strcmp(argv[1], "--test-undo-vacant-house-split") == 0) {
+        return test_undo_when_merged_house_becomes_vacant(argv[2]);
+    }
     if (argc != 5) {
         printf("Incorrect number of arguments (%d)\n", argc);
         return -1;

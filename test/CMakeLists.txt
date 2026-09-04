@@ -40,6 +40,19 @@ add_executable(compare
     ${PROJECT_SOURCE_DIR}/src/core/zip.c
 )
 
+add_executable(screen_test
+    platform/screen.c
+    ${PROJECT_SOURCE_DIR}/src/platform/screen.c
+    ${PROJECT_SOURCE_DIR}/src/core/calc.c
+)
+target_compile_definitions(screen_test PRIVATE SDL_MAIN_HANDLED)
+target_link_libraries(screen_test ${SDL2_LIBRARY})
+if(UNIX AND NOT APPLE)
+    target_link_libraries(screen_test m)
+endif()
+add_test(NAME screen_startup_scale COMMAND screen_test)
+set_tests_properties(screen_startup_scale PROPERTIES ENVIRONMENT "SDL_VIDEODRIVER=dummy")
+
 add_executable(autopilot
     sav/sav_compare.c
     sav/run.c

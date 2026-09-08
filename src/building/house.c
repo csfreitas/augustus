@@ -81,7 +81,7 @@ void building_house_change_to_vacant_lot(building *house)
     house->subtype.house_level = house->type - BUILDING_HOUSE_VACANT_LOT;
     int image_id = image_group(GROUP_BUILDING_HOUSE_VACANT_LOT);
     if (house->house_is_merged) {
-        // New vacant lots may reuse building IDs still referenced by undo.
+        // Undo would restore map data from before the house split.
         game_undo_disable();
         map_building_tiles_remove(house->id, house->x, house->y);
         house->house_is_merged = 0;

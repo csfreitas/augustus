@@ -1,4 +1,18 @@
-# Augustus ![](res/julius_48.png)
+# Claudius — based on Augustus
+
+Claudius is the integration branch of this fork, combining custom-campaign
+localization and media support with font, layout, and audio fixes. Development
+can proceed here while the independent contributions are reviewed upstream.
+
+**Status: technical integration, not a stable release.** See the
+[Claudius integration and release plan](doc/claudius.md) for included changes,
+validation requirements, and the update policy. The executable currently retains
+the Augustus name and settings paths; use a separate user directory for testing.
+The download links below refer to upstream Augustus, not Claudius builds.
+
+[![Claudius build](https://github.com/csfreitas/augustus/actions/workflows/main.yml/badge.svg?branch=claudius)](https://github.com/csfreitas/augustus/actions/workflows/main.yml?query=branch%3Aclaudius)
+
+## Upstream Augustus ![](res/julius_48.png)
 
 [![Github Actions](https://github.com/Keriew/augustus/workflows/Build%20Augustus/badge.svg)](https://github.com/Keriew/Augustus/actions)
 

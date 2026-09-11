@@ -58,6 +58,10 @@ after each update. A clean rebase is not proof of functional compatibility.
 5. Apply final fixes and publish a stable release only after those gates pass.
 
 The initial branch creation is not a stable release or a completed runtime QA.
+The first integrated build is tracked in
+[GitHub Actions run 34562410079](https://github.com/csfreitas/augustus/actions/runs/34562410079).
+CodeQL has been enabled for this fork and is configured to analyze pushes to
+`claudius`. Check completed run results before distributing a candidate.
 CI artifacts are development builds. They retain upstream binary names and
 settings paths for now; isolate the user directory when testing.
 Do not point Claudius users to upstream downloads as if they contained these changes.

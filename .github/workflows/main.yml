@@ -1,4 +1,4 @@
-name: Build Augustus
+name: Build Claudius
 on:
   push:
     paths-ignore:
@@ -243,7 +243,7 @@ jobs:
         with:
           ruby-version: '3.0'
       - name: Send Webhook Notification
-        if: matrix.COMPILER == 'mingw-64'
+        if: matrix.COMPILER == 'mingw-64' && github.repository == 'Keriew/augustus'
         env:
           JOB_STATUS: ${{ job.status }}
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}

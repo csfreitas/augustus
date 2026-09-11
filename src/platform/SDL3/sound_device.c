@@ -580,6 +580,9 @@ void sound_device_close(void)
     if (!data.initialized) {
         return;
     }
+    for (unsigned int i = 0; i < data.total_channels; i++) {
+        stop_channel(i);
+    }
     free_custom_audio_stream();
     MIX_DestroyMixer(data.mixer);
     free(data.channels);

@@ -246,16 +246,13 @@ static MIX_Track *load_track(const char *filename, uint8_t **audio_buffer)
 
 static void callback_for_sound_finished(void *userdata, MIX_Track *track)
 {
-    if (!data.sound_finished_callback) {
-        return;
-    }
     sound_channel *channel = (sound_channel *) userdata;
 
     if (channel->type == SOUND_TYPE_MUSIC) {
         if (data.music_finished_callback) {
             data.music_finished_callback();
         }
-    } else {
+    } else if (data.sound_finished_callback) {
         data.sound_finished_callback(channel->type);
     }
 }

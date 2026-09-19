@@ -21,7 +21,32 @@ Base: Augustus `95e120d80babd55e93a6e5d755a4971ddbb4b2a5`.
 Campaign localization and responsive layout remain language-agnostic.
 Font asset detection supports the Brazilian game assets without requiring them
 for other installations. Text and media retain their canonical fallbacks.
-See [message localization](custom_campaign_localization.md) for package details.
+See [campaign localization](custom_campaign_localization.md) for package details.
+
+## Campaign metadata integration — 2026-09-19
+
+The local continuation of Augustus PR #1893 adds display-only campaign names
+and descriptions, mission titles, and scenario names/descriptions through
+`localization/<locale>/campaign.xml`. The campaign picker also displays localized
+names in its left list without changing the active campaign or saved progress.
+The original filenames and campaign identity remain canonical.
+
+This integration preserves Claudius media overlays, font handling and responsive
+dialogs. Text and metadata share locale resolution; media companions stay bound
+to the exact locale that provided the valid message overlay. No campaign
+translations or audio assets are bundled by this change.
+
+The accepted upstream XML cleanup fix from PR #1921 (`277fabe7`) is included.
+It fixes pending text cleanup on parser reset/free; it is independent of the
+metadata feature. The existing SDL3 music fix from PR #1920 remains unchanged.
+
+Standalone folder/ZIP suites cover metadata and previews (106 cases, 824 checks)
+and message/media lookup (110 cases, 1148 checks). See the
+[metadata test guide](../tests/campaign_localization/README.md) and
+[message/media test guide](../tests/custom_messages_localization/README.md).
+These tests do not establish visual quality, audio playback, save serialization
+or full gameplay compatibility. Integrated campaign content, empire city-name
+localization, package/installer work and final mission QA remain separate gates.
 
 ## Branch policy
 
@@ -50,7 +75,7 @@ after each update. A clean rebase is not proof of functional compatibility.
 2. Validate campaign text/media fallback, missing or invalid companions,
    closing messages during fanfares, glyph rendering, and long dialog text.
    Cover directory and `.campaign` layouts and `.mapx`/`.svx` scenarios.
-3. Finish generic campaign metadata localization and prepare an integrated
+3. Validate campaign metadata in the integrated candidate and prepare its
    package/installer. Validate Steam, GOG, and CD-ROM installations actually
    available for testing; do not claim untested distribution coverage.
 4. Deliver one playable candidate before requesting the user's detailed

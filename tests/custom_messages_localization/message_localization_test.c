@@ -1,4 +1,4 @@
-/* Production message/locale parsers, folder/ZIP loading and text encoding.
+/* Production message/media/locale parsers, folder/ZIP loading and text encoding.
  * Adapters isolate game state, language selection and filesystem roots. */
 #include "core/config.h"
 #include "core/encoding.h"
@@ -33,6 +33,11 @@ const char *config_get_string(config_string_key key) { (void) key; return ui_lan
 language_type locale_last_determined_language(void) { return detected_language; }
 int game_campaign_is_active(void) { return campaign_active; }
 int game_campaign_is_custom(void) { return campaign_custom; }
+int game_campaign_has_file(const char *path)
+{
+    const char *relative = campaign_active ? campaign_file_remove_prefix(path) : NULL;
+    return relative && campaign_file_exists(relative);
+}
 int custom_messages_count(void) { return message_count; }
 int custom_messages_get_id_by_uid(const uint8_t *uid)
 {
@@ -154,6 +159,30 @@ static void add_text(const char *language, const char *xml)
     snprintf(path, sizeof(path), "localization/%s/messages/RC01.xml", language);
     add_file(path, xml);
 }
+static void add_media(const char *language, const char *xml)
+{
+    char path[512];
+    snprintf(path, sizeof(path), "localization/%s/media/RC01.xml", language);
+    add_file(path, xml);
+}
+static void add_audio(const char *language, const char *filename)
+{
+    char path[512];
+    snprintf(path, sizeof(path), "localization/%s/audio/%s", language, filename);
+    /* Only path resolution is under test here, not audio decoding/playback. */
+    add_file(path, "fixture audio placeholder");
+}
+static int media_path_equals(const char *actual, const char *language, const char *filename)
+{
+    char expected[512];
+    snprintf(expected, sizeof(expected), CAMPAIGNS_DIRECTORY "/localization/%s/audio/%s", language, filename);
+    return actual && strcmp(actual, expected) == 0;
+}
+static void expect_no_media(void)
+{
+    CHECK(!custom_messages_localization_get_speech(1));
+    CHECK(!custom_messages_localization_get_background_music(1));
+}
 static int load(void)
 {
     if (fixture_zip) { zip_close(fixture_zip); fixture_zip = NULL; }
@@ -166,6 +195,7 @@ static void expect_empty(void)
     CHECK(!custom_messages_localization_get_title(1));
     CHECK(!custom_messages_localization_get_subtitle(1));
     CHECK(!custom_messages_localization_get_text(1));
+    expect_no_media();
 }
 static const char *text_xml =
     "<localization version=\"1\"><message uid=\"briefing\"><title>Missão inicial</title>"
@@ -295,6 +325,133 @@ static void test_matrix(void)
     custom_messages_localization_clear();
     campaign_file_close_zip();
 }
+static void test_media_matrix(void)
+{
+    const char *media_xml = "<media_localization version=\"1\"><message uid=\"briefing\">"
+        "<speech filename=\"speech.wav\"/><background_music filename=\"music.ogg\"/>"
+        "</message></media_localization>";
+    const struct { const char *requested, *resolved, *manifest; } locales[] = {
+        {"pt-BR", "pt-BR", NULL},
+        {"PT_br", "pt-BR", NULL},
+        {"Portuguese", "pt-BR", "<locales version=\"1\">"
+            "<locale id=\"pt-BR\" aliases=\"Portuguese\"/></locales>"},
+        {"Portuguese (Brazil)", "Portuguese (Brazil)", NULL},
+        {"Português", "Português", NULL},
+        {"", "pt-BR", "<locales version=\"1\">"
+            "<locale id=\"pt-BR\" default-for=\"pt\"/></locales>"}
+    };
+    for (int i = 0; i < sizeof(locales) / sizeof(*locales); i++) {
+        begin_case("media follows resolved text locale", locales[i].requested);
+        add_text(locales[i].resolved, text_xml);
+        add_media(locales[i].resolved, media_xml);
+        add_audio(locales[i].resolved, "speech.wav");
+        add_audio(locales[i].resolved, "music.ogg");
+        if (locales[i].manifest) add_file("localization/locales.xml", locales[i].manifest);
+        CHECK(load()); expect_fields();
+        CHECK(media_path_equals(custom_messages_localization_get_speech(1), locales[i].resolved, "speech.wav"));
+        CHECK(media_path_equals(custom_messages_localization_get_background_music(1), locales[i].resolved, "music.ogg"));
+        CHECK(!custom_messages_localization_get_speech(0));
+        CHECK(!custom_messages_localization_get_speech(2));
+        CHECK(!custom_messages_localization_get_background_music(-1));
+        CHECK(!custom_messages_localization_get_background_music(3));
+    }
+
+    for (int missing_speech = 0; missing_speech < 2; missing_speech++) {
+        begin_case("missing media file falls back independently", "pt-BR");
+        add_text("pt-BR", text_xml); add_media("pt-BR", media_xml);
+        add_audio("pt-BR", missing_speech ? "music.ogg" : "speech.wav");
+        CHECK(load()); expect_fields();
+        if (missing_speech) {
+            CHECK(!custom_messages_localization_get_speech(1));
+            CHECK(media_path_equals(custom_messages_localization_get_background_music(1), "pt-BR", "music.ogg"));
+        } else {
+            CHECK(media_path_equals(custom_messages_localization_get_speech(1), "pt-BR", "speech.wav"));
+            CHECK(!custom_messages_localization_get_background_music(1));
+        }
+    }
+
+    begin_case("packaged save resolves localized media by canonical stem", "pt-BR");
+    fixture_scenario.path = "scenarios/RC01.svx";
+    add_text("pt-BR", text_xml); add_media("pt-BR", media_xml); add_audio("pt-BR", "speech.wav");
+    CHECK(load()); expect_fields();
+    CHECK(media_path_equals(custom_messages_localization_get_speech(1), "pt-BR", "speech.wav"));
+
+    begin_case("audio without companion remains canonical", "pt-BR");
+    add_text("pt-BR", text_xml); add_audio("pt-BR", "speech.wav");
+    CHECK(load()); expect_fields(); expect_no_media();
+
+    begin_case("media companion requires matching text overlay", "pt-BR");
+    add_media("pt-BR", media_xml); add_audio("pt-BR", "speech.wav");
+    CHECK(!load()); expect_empty();
+
+    begin_case("invalid text cannot enable localized media", "pt-BR");
+    add_text("pt-BR", "<localization version=\"2\"/>");
+    add_media("pt-BR", media_xml); add_audio("pt-BR", "speech.wav");
+    CHECK(!load()); expect_empty();
+
+    begin_case("media does not independently normalize a different text locale", "pt_br");
+    add_text("pt_br", text_xml); add_text("pt-BR", text_xml);
+    add_media("pt-BR", media_xml); add_audio("pt-BR", "speech.wav");
+    CHECK(load()); expect_fields(); expect_no_media();
+
+    begin_case("audio in another locale is not used by matching companion", "pt_br");
+    add_text("pt_br", text_xml); add_media("pt_br", media_xml);
+    add_audio("pt-BR", "speech.wav"); add_audio("pt-BR", "music.ogg");
+    CHECK(load()); expect_fields(); expect_no_media();
+
+    const char *invalid[] = {
+        "<media_localization version=\"2\"/>",
+        "<media_localization version=\"1\"><message uid=\"briefing\"><speech filename=\"speech.wav\"/>",
+        "<media_localization version=\"1\"><message><speech filename=\"speech.wav\"/></message></media_localization>",
+        "<media_localization version=\"1\"><message uid=\"briefing\"><speech filename=\"speech.wav\"/>"
+            "<speech filename=\"speech.wav\"/></message></media_localization>",
+        "<media_localization version=\"1\"><message uid=\"briefing\"><speech filename=\"speech.wav\"/>"
+            "</message><message uid=\"briefing\"><background_music filename=\"music.ogg\"/>"
+            "</message></media_localization>"
+    };
+    for (int i = 0; i < sizeof(invalid) / sizeof(*invalid); i++) {
+        begin_case("invalid companion discards media but preserves translated text", "pt-BR");
+        add_text("pt-BR", text_xml); add_media("pt-BR", invalid[i]);
+        add_audio("pt-BR", "speech.wav"); add_audio("pt-BR", "music.ogg");
+        CHECK(load()); expect_fields(); expect_no_media();
+    }
+
+    const char *unsafe_filenames[] = {"../speech.wav", "sub/speech.wav", "C:speech.wav", " speech.wav", "speech.wav."};
+    for (int i = 0; i < sizeof(unsafe_filenames) / sizeof(*unsafe_filenames); i++) {
+        begin_case("invalid media filename leaves translated text intact", "pt-BR");
+        char xml[512];
+        snprintf(xml, sizeof(xml), "<media_localization version=\"1\"><message uid=\"briefing\">"
+            "<speech filename=\"%s\"/></message></media_localization>", unsafe_filenames[i]);
+        add_text("pt-BR", text_xml); add_media("pt-BR", xml);
+        CHECK(load()); expect_fields(); expect_no_media();
+    }
+
+    begin_case("unknown media UID does not hide a known message", "pt-BR");
+    add_text("pt-BR", text_xml); add_audio("pt-BR", "speech.wav");
+    add_media("pt-BR", "<media_localization version=\"1\"><message uid=\"unknown\">"
+        "<speech filename=\"ignored.wav\"/></message><message uid=\"briefing\">"
+        "<speech filename=\"speech.wav\"/></message></media_localization>");
+    CHECK(load()); expect_fields();
+    CHECK(media_path_equals(custom_messages_localization_get_speech(1), "pt-BR", "speech.wav"));
+
+    begin_case("language switch and clear cannot retain old localized media", "pt-BR");
+    add_text("pt-BR", text_xml); add_media("pt-BR", media_xml);
+    add_audio("pt-BR", "speech.wav"); add_audio("pt-BR", "music.ogg");
+    add_text("fr", text_xml); add_media("fr", media_xml); add_audio("fr", "speech.wav");
+    add_text("de", text_xml);
+    CHECK(load());
+    CHECK(media_path_equals(custom_messages_localization_get_speech(1), "pt-BR", "speech.wav"));
+    CHECK(media_path_equals(custom_messages_localization_get_background_music(1), "pt-BR", "music.ogg"));
+    ui_language = "fr"; CHECK(custom_messages_localization_load());
+    CHECK(media_path_equals(custom_messages_localization_get_speech(1), "fr", "speech.wav"));
+    CHECK(!custom_messages_localization_get_background_music(1));
+    ui_language = "de"; CHECK(custom_messages_localization_load()); expect_fields(); expect_no_media();
+    ui_language = "pt-BR"; CHECK(custom_messages_localization_load());
+    CHECK(media_path_equals(custom_messages_localization_get_speech(1), "pt-BR", "speech.wav"));
+    custom_messages_localization_clear(); expect_empty();
+    custom_messages_localization_clear(); expect_empty();
+    campaign_file_close_zip();
+}
 int main(void)
 {
     if (make_directory("fixtures") != 0 && errno != EEXIST) return 2;
@@ -303,7 +460,10 @@ int main(void)
         if (make_directory(run_root) == 0) break;
         if (errno != EEXIST) return 2;
     }
-    for (archive_mode = 0; archive_mode < 2; archive_mode++) test_matrix();
+    for (archive_mode = 0; archive_mode < 2; archive_mode++) {
+        test_matrix();
+        test_media_matrix();
+    }
     printf("RESULT: %d cases, %d checks, %d failures (folder + real ZIP .campaign).\n", cases, checks, failures);
     return failures ? 1 : 0;
 }

@@ -95,7 +95,7 @@ static void finish_text(void)
     if (!data.current_element || !data.current_element->on_text) {
         return;
     }
-    element_text *current_text = &data.texts[data.depth];
+    element_text *current_text = &data.texts[data.depth - 1];
     if (!current_text->text) {
         return;
     }
@@ -264,7 +264,7 @@ static void handle_element_text(const sxmltok_t *token)
                 text++;
                 line_length--;
             }
-            append_to_text(&data.texts[data.depth], text, line_length);
+            append_to_text(&data.texts[data.depth - 1], text, line_length);
             text += line_length;
         }
     }

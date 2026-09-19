@@ -177,7 +177,7 @@ static void draw_trader(building_info_context *c, figure *f)
 
     const empire_city *city = empire_city_get(f->empire_city_id);
     int width = lang_text_draw(64, f->type, c->x_offset + 90, c->y_offset + 110, FONT_NORMAL_BROWN);
-    const uint8_t *city_name = empire_city_get_name(city);
+    const uint8_t *city_name = empire_city_get_display_name(city);
 
     if (f->type != FIGURE_NATIVE_TRADER) {
         text_draw(city_name, c->x_offset + 90 + width, c->y_offset + 110, FONT_NORMAL_BROWN, 0);

@@ -120,7 +120,7 @@ static int draw_background(void)
         image_draw(resource_get_data(RESOURCE_WEAPONS)->image.icon, 50, 106, COLOR_MASK_NONE, SCALE_NONE);
         width = lang_text_draw(52, 72, 80, 102, FONT_NORMAL_WHITE);
         empire_city *city = empire_city_get(city_military_distant_battle_city());
-        const uint8_t *city_name = empire_city_get_name(city);
+        const uint8_t *city_name = empire_city_get_display_name(city);
         text_draw(city_name, 80 + width, 102, FONT_NORMAL_WHITE, 0);
         int strength_text_id;
         int enemy_strength = city_military_distant_battle_enemy_strength();

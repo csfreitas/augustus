@@ -111,8 +111,8 @@ Developer regression tests: [campaign localization tests](../tests/campaign_loca
 
 The message and campaign metadata XML formats above translate text only.
 Localized speech and music use the separate companion format below. Empire city
-names and font rendering remain separate features. Campaigns without localization
-files retain their existing behavior.
+names use the presentation-only overlay described below; font rendering remains
+a separate feature. Campaigns without localization files retain their existing behavior.
 
 ## Localized speech and background music
 
@@ -150,3 +150,44 @@ Example:
 Only `speech` and `background_music` are supported in the first version. For consistent behavior on Windows, Linux, and macOS, filenames must use printable ASCII characters and be simple file names without directories, drive prefixes, path traversal, leading or trailing spaces, or platform-reserved characters (`<`, `>`, `:`, `"`, `/`, `\\`, `|`, `?`, `*`). Missing entries and missing localized files fall back independently to the canonical media. A malformed media companion is ignored without discarding a valid text overlay.
 
 Media companions depend on a matching text overlay. They are held separately in memory, are not serialized into save games, and are not exported into the canonical custom message XML.
+
+## Imperial map city names
+
+Custom campaigns may also localize the presentation name of an empire city. The
+canonical name stored in the map, save, editor, and scenario logic is never changed.
+The display overlay is used only by runtime UI screens such as the empire map,
+trade panels, advisor, and trader messages. Sorting cities by name uses their
+display names, while name-based scenario conditions continue using canonical names.
+
+For `RC13 Valencia.mapx` and locale `pt-BR`, the optional file is:
+
+```text
+localization/pt-BR/empire/RC13 Valencia.xml
+```
+
+Each entry is anchored to the empire object ID and the original name. The source
+guard makes a stale overlay fall back safely if a map is edited or regenerated:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<empire_localization version="1">
+    <city object-id="261" source="Ruins of Carthago">
+        <name>Ruínas de Cartago</name>
+    </city>
+</empire_localization>
+```
+
+Object IDs are zero-based empire object IDs used by the scenario data, not city-list
+positions. They must be decimal integers from 0 to 2147483647. Duplicate IDs,
+missing source guards, empty names, invalid versions, or malformed XML reject the
+complete overlay. Missing entries, unknown IDs, and source-name mismatches keep
+the canonical name. The overlay is presentation-only and is not serialized into
+saves, editor exports, or used by name-based logic.
+
+The same locale resolver and folder/`.campaign` loader used by messages and
+metadata also load these names. The filename follows the canonical scenario path,
+including the basename of `.svx` campaign scenarios. Overlays reload after scenario
+or save loading and successful language changes. They are unavailable in the
+editor, an inactive/suspended campaign, or the original campaign.
+
+Developer regression tests: [empire name localization tests](../tests/empire_localization/README.md).

@@ -1776,7 +1776,7 @@ static void draw_sidebar_city_item(const grid_box_item *item)
 {
     sidebar_city_entry *entry = &sidebar_cities[item->index];
     empire_city *city = empire_city_get(entry->city_id);
-    const uint8_t *name = empire_city_get_name(city);
+    const uint8_t *name = empire_city_get_display_name(city);
     int was_city_open = trade_route_was_open(city->route_id, data.sidebar.trade_year);
     int item_usable_width = grid_box_get_usable_width(&sidebar_grid_box) - SIDEBAR_MARGIN_HORIZONTAL * 2;
 
@@ -2316,7 +2316,7 @@ static void draw_city_name(const empire_city *city)
     if (city) {
         int x_offset = (data.panel.x_min + data.panel.x_max - 332) / 2 + 64;
         int y_offset = data.y_max - 118;
-        const uint8_t *city_name = empire_city_get_name(city);
+        const uint8_t *city_name = empire_city_get_display_name(city);
         text_draw_centered_ellipsized(city_name, x_offset, y_offset, 268, FONT_LARGE_BLACK, 0);
     }
 }
@@ -3009,7 +3009,7 @@ static int get_city_name_tooltip_sidebar(tooltip_context *c)
     if (!city || city->type != EMPIRE_CITY_TRADE) {
         return 0;
     }
-    const uint8_t *name = empire_city_get_name(city);
+    const uint8_t *name = empire_city_get_display_name(city);
     if (!name) {
         return 0;
     }
@@ -3060,7 +3060,7 @@ static int get_city_name_tooltip(tooltip_context *c)
 
     data.selected_city = empire_city_get_for_object(selected_object - 1);
     const empire_city *city = empire_city_get(data.selected_city);
-    const uint8_t *name = empire_city_get_name(city);
+    const uint8_t *name = empire_city_get_display_name(city);
 
     if (!name) {
         return 0;

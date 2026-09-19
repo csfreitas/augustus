@@ -279,8 +279,8 @@ int window_empire_sidebar_sort_sidebar_city_sorter(const void *a, const void *b)
     switch (sort_data.current_sorting) {
         case SORT_BY_NAME:
         {
-            const char *name_a = (const char *) empire_city_get_name(city_a);
-            const char *name_b = (const char *) empire_city_get_name(city_b);
+            const char *name_a = (const char *) empire_city_get_display_name(city_a);
+            const char *name_b = (const char *) empire_city_get_display_name(city_b);
             result = strcmp(name_a, name_b);
             break;
         }

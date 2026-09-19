@@ -17,6 +17,7 @@
 #include "city/resource.h"
 #include "editor/editor.h"
 #include "empire/object.h"
+#include "empire/localization.h"
 #include "empire/trade_route.h"
 #include "empire/type.h"
 #include "figuretype/trader.h"
@@ -576,6 +577,14 @@ const uint8_t *empire_city_get_name(const empire_city *city)
         return full->city_custom_name;
     }
     return lang_get_string(21, city->name_id);
+}
+
+const uint8_t *empire_city_get_display_name(const empire_city *city)
+{
+    if (!city) {
+        return 0;
+    }
+    return empire_city_localization_get_name(city->empire_object_id, empire_city_get_name(city));
 }
 
 void empire_city_save_state(buffer *buf)

@@ -39,3 +39,15 @@ jobs:
         run: cmake --build build-message-tests --config ${{ matrix.configuration }}
       - name: Run message tests
         run: ctest --test-dir build-message-tests -C ${{ matrix.configuration }} --output-on-failure
+      - name: Configure empire name tests
+        run: cmake -S tests/empire_localization -B build-empire-tests -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+      - name: Build empire name tests
+        run: cmake --build build-empire-tests --config ${{ matrix.configuration }}
+      - name: Run empire name tests
+        run: ctest --test-dir build-empire-tests -C ${{ matrix.configuration }} --output-on-failure
+      - name: Configure XML depth tests
+        run: cmake -S tests/xml_parser_depth -B build-xml-depth-tests -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+      - name: Build XML depth tests
+        run: cmake --build build-xml-depth-tests --config ${{ matrix.configuration }}
+      - name: Run XML depth tests
+        run: ctest --test-dir build-xml-depth-tests -C ${{ matrix.configuration }} --output-on-failure

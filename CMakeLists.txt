@@ -413,6 +413,7 @@ set(EMPIRE_FILES
     ${PROJECT_SOURCE_DIR}/src/empire/empire.c
     ${PROJECT_SOURCE_DIR}/src/empire/export_xml.c
     ${PROJECT_SOURCE_DIR}/src/empire/import_xml.c
+    ${PROJECT_SOURCE_DIR}/src/empire/localization.c
     ${PROJECT_SOURCE_DIR}/src/empire/object.c
     ${PROJECT_SOURCE_DIR}/src/empire/trade_prices.c
     ${PROJECT_SOURCE_DIR}/src/empire/trade_route.c

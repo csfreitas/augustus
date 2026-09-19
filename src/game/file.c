@@ -25,6 +25,7 @@
 #include "core/string.h"
 #include "empire/city.h"
 #include "empire/empire.h"
+#include "empire/localization.h"
 #include "empire/trade_prices.h"
 #include "figure/enemy_army.h"
 #include "figure/formation.h"
@@ -123,6 +124,7 @@ static void clear_scenario_data(void)
     figure_visited_buildings_init();
     scenario_events_clear();
     custom_messages_clear_all();
+    empire_city_localization_clear();
 
     game_time_init(2098);
 
@@ -345,6 +347,7 @@ static int start_scenario(const uint8_t *scenario_name, const char *scenario_fil
     scenario_set_campaign_mission(mission);
     scenario_set_campaign_rank(rank);
     custom_messages_localization_load();
+    empire_city_localization_load();
 
     scenario_settings_init_mission();
     city_emperor_init_scenario(rank);
@@ -411,6 +414,7 @@ int game_file_start_scenario_from_buffer(uint8_t *data, int length, int is_save_
     scenario_set_campaign_mission(mission);
     scenario_set_campaign_rank(rank);
     custom_messages_localization_load();
+    empire_city_localization_load();
     scenario_restore_campaign_player_name();
 
     if (game_campaign_is_original()) {
@@ -462,6 +466,7 @@ int game_file_load_saved_game(const char *filename)
     initialize_saved_game();
     building_storage_reset_building_ids();
     custom_messages_localization_load();
+    empire_city_localization_load();
 
     sound_music_update(1);
     return 1;

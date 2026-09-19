@@ -13,6 +13,7 @@
 #include "core/random.h"
 #include "core/string.h"
 #include "editor/editor.h"
+#include "empire/localization.h"
 #include "figure/type.h"
 #include "game/animation.h"
 #include "game/campaign.h"
@@ -239,8 +240,10 @@ int game_reload_language(void)
         game_campaign_reload_localization();
         if (is_editor) {
             custom_messages_localization_clear();
+            empire_city_localization_clear();
         } else {
             custom_messages_localization_load();
+            empire_city_localization_load();
         }
     }
     return result;

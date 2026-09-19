@@ -99,6 +99,7 @@ int empire_unlock_all_resources(void);
 int empire_city_change_own_resource_availability(resource_type resource, int is_available);
 
 const uint8_t *empire_city_get_name(const empire_city *city);
+const uint8_t *empire_city_get_display_name(const empire_city *city);
 
 void empire_city_save_state(buffer *buf);
 

@@ -1,6 +1,6 @@
-# Custom message localization tests
+# Custom message and media localization tests
 
-Standalone CMake/CTest target using the production message parser, shared locale
+Standalone CMake/CTest target using the production message/media parsers, shared locale
 resolver, folder/ZIP loader, XML parser and UTF-8/internal encoding conversion.
 No game installation, SDL, external test framework or network is required.
 
@@ -23,9 +23,15 @@ locale normalization, aliases/default detection, directories and aliases with
 spaces or accents, ambiguous/invalid manifests, language switching and clearing.
 Portuguese and French strings use the real encoding converter.
 
-Expected result: `58 cases, 444 checks, 0 failures`.
+The suite also checks localized speech/music paths, companions bound to the
+locale that supplied valid text, independent missing-file fallback, malformed
+companions and filenames, and clearing media when switching languages. Media
+fixtures validate lookup and parsing only: they are not decoded or played.
+
+Expected result: `110 cases, 1148 checks, 0 failures`.
 
 Adapters supply game state, UID lookup, selected/detected language and filesystem
-roots. Fallback is checked as a null result from each localization getter: the
+roots; the campaign-file adapter delegates to the production folder/ZIP reader.
+Fallback is checked as a null result from each localization getter: the
 canonical message consumer, scenario execution and save serialization are not
 linked. UI rendering, font glyphs and full gameplay are not validated here.

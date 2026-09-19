@@ -49,7 +49,7 @@ target_compile_definitions(screen_test PRIVATE SDL_MAIN_HANDLED)
 target_link_libraries(screen_test ${SDL2_LIBRARY})
 if(WIN32)
     find_file(SDL2_RUNTIME_LIBRARY SDL2.dll
-        HINTS ${SDL2_INCLUDE_DIR}/.. ${SDL_EXT_DIR} ${SDL_MINGW_EXT_DIR} ENV SDL2DIR
+        HINTS ${SDL2_INCLUDE_DIR}/.. ${SDL2_INCLUDE_DIR}/../.. ${SDL_EXT_DIR} ENV SDL2DIR
         PATH_SUFFIXES bin lib/${SDL2_PROCESSOR_ARCH}
     )
     if(SDL2_RUNTIME_LIBRARY)

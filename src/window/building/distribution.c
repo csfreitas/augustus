@@ -491,7 +491,7 @@ static void draw_dock_permission_buttons(int x_offset, int y_offset, int dock_id
                 FONT_NORMAL_RED);
         }
         empire_city *city = empire_city_get(button->parameter2);
-        const uint8_t *city_name = empire_city_get_name(city);
+        const uint8_t *city_name = empire_city_get_display_name(city);
         int x = x_offset + 16;
         int y = y_offset + 4 + button->y;
         text_draw(city_name, x, y, FONT_NORMAL_WHITE, 0);
@@ -1115,7 +1115,7 @@ const uint8_t *window_building_dock_get_tooltip(building_info_context *c)
         }
         static uint8_t text[400];
         uint8_t *cursor = text;
-        cursor = string_copy(empire_city_get_name(city), cursor, 400 - (int) (cursor - text));
+        cursor = string_copy(empire_city_get_display_name(city), cursor, 400 - (int) (cursor - text));
         cursor = string_copy(string_from_ascii("\n"), cursor, 400 - (int) (cursor - text));
         cursor = string_copy(lang_get_string(47, 5), cursor, 400 - (int) (cursor - text));
         cursor = string_copy(string_from_ascii(": "), cursor, 400 - (int) (cursor - text));

@@ -1,0 +1,13 @@
+PASS no award, allowed arch stays hidden
+PASS no award, forbidden arch stays hidden
+FAIL earned arch visible despite scenario flag: got 0, expected 1
+PASS reward does not rewrite scenario permission
+PASS other building restrictions preserved
+PASS placed award exhausted
+FAIL demolition returns earned arch: got 0, expected 1
+FAIL second victory awards another arch: got 0, expected 1
+PASS both awards exhausted
+PASS allowed earned arch still available
+PASS tutorial restrictions unchanged
+PASS Rome supplied arch independent of trade
+RESULT 12 checks, 3 failures

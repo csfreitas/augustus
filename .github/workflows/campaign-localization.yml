@@ -51,3 +51,9 @@ jobs:
         run: cmake --build build-xml-depth-tests --config ${{ matrix.configuration }}
       - name: Run XML depth tests
         run: ctest --test-dir build-xml-depth-tests -C ${{ matrix.configuration }} --output-on-failure
+      - name: Configure triumphal arch tests
+        run: cmake -S tests/triumphal_arch -B build-arch-tests -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+      - name: Build triumphal arch tests
+        run: cmake --build build-arch-tests --config ${{ matrix.configuration }}
+      - name: Run triumphal arch tests
+        run: ctest --test-dir build-arch-tests -C ${{ matrix.configuration }} --output-on-failure

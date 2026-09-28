@@ -2006,7 +2006,6 @@ static void draw_foreground(void)
     }
 
     bottom_buttons[NUM_BOTTOM_BUTTONS - 1].is_disabled = !data.has_changes;
-    bottom_buttons[NUM_BOTTOM_BUTTONS - 1].font_primary = data.has_changes ? 0 : COLOR_FONT_LIGHT_GRAY;
     complex_button_draw_array(bottom_buttons, NUM_BOTTOM_BUTTONS);
 
     //  scrollbar (if needed)
@@ -2256,8 +2255,6 @@ static void init(unsigned int page, unsigned int category, int show_background_i
     for (int i = 0; i < NUM_BOTTOM_BUTTONS; i++) {
         complex_button *button = &bottom_buttons[i];
         complex_button_init_style(button, COMPLEX_BUTTON_STYLE_DEFAULT);
-        // Keep ellipsis available when Apply is disabled; its color is set when drawing.
-        button->disabled_no_effect = 1;
         button->is_hovered = button->is_clicked = button->is_active = 0;
         memset(&button->tooltip_c, 0, sizeof(button->tooltip_c));
         lang_seq_frag_label(&bottom_button_labels[i], CUSTOM_TRANSLATION, button->parameters[1]);
